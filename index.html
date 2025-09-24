@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PagWeb - Gestão de Clientes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        :root, html[data-theme='dark'] {
+            --color-bg-primary: #111827;
+            --color-bg-secondary: #1f2937;
+            --color-bg-tertiary: #374151;
+            --color-bg-tertiary-hover: #4b5563;
+            --color-border: #374151;
+            --color-text-primary: #f3f4f6;
+            --color-text-secondary: #9ca3af;
+            --color-accent: #3b82f6;
+            --color-accent-hover: #2563eb;
+        }
+        html[data-theme='light'] {
+            --color-bg-primary: #f9fafb;
+            --color-bg-secondary: #ffffff;
+            --color-bg-tertiary: #f3f4f6;
+            --color-bg-tertiary-hover: #e5e7eb;
+            --color-border: #e5e7eb;
+            --color-text-primary: #1f2937;
+            --color-text-secondary: #6b7280;
+            --color-accent: #2563eb;
+            --color-accent-hover: #1d4ed8;
+        }
+        html[data-theme='matrix'] {
+            --color-bg-primary: #000000;
+            --color-bg-secondary: #0D0208;
+            --color-bg-tertiary: #003B00;
+            --color-bg-tertiary-hover: #005F00;
+            --color-border: #003B00;
+            --color-text-primary: #00FF00;
+            --color-text-secondary: #008F00;
+            --color-accent: #00FF00;
+            --color-accent-hover: #32CD32;
+        }
+
+
+        .sidebar-link {
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background-color: var(--color-bg-tertiary);
+        }
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--color-bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--color-bg-tertiary-hover); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+
+        .sidebar-collapsed .sidebar-text { display: none; }
+        .sidebar-collapsed .sidebar-link { justify-content: center; }
+        .sidebar-collapsed .sidebar-link svg { margin-right: 0; }
+        
+        #sidebar-toggle.is-collapsed #toggle-arrow {
+            transform: rotate(180deg);
+        }
+
+        aside, main { transition: all 0.3s ease-in-out; }
+
+        .theme-button.active {
+            box-shadow: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-accent);
+        }
+
+    </style>
+</head>
+<body class="bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]">
+
+    <div class="flex flex-col h-screen overflow-hidden">
+        <!-- Top Navbar -->
+        <header class="h-20 flex-shrink-0 flex items-center justify-between bg-[var(--color-bg-secondary)] border-b border-[var(--color-border)] z-20">
+            <div class="w-20 flex items-center justify-center">
+                 <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center font-bold text-white text-sm">
+                    CS
+                </div>
+            </div>
+            
+            <div class="flex-1 flex items-center justify-center">
+                 <h1 class="text-2xl font-bold text-center">PagWeb</h1>
+            </div>
+
+            <div class="w-20 flex items-center justify-center">
+                <div class="relative">
+                    <img src="https://placehold.co/40x40/4A5568/E2E8F0?text=A" alt="Avatar" class="w-10 h-10 rounded-full cursor-pointer">
+                </div>
+            </div>
+        </header>
+
+        <div class="flex flex-1 overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-[var(--color-bg-secondary)] flex-shrink-0 hidden md:flex md:flex-col z-10">
+                <nav class="flex-1 flex flex-col">
+                    <div class="py-6 space-y-2">
+                        <a href="#dashboard" class="sidebar-link flex items-center py-3 px-6 text-[var(--color-text-primary)] active">
+                            <svg class="w-6 h-6 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                            <span class="sidebar-text">Visão Geral</span>
+                        </a>
+                        <a href="#clientes" class="sidebar-link flex items-center py-3 px-6 text-[var(--color-text-primary)]">
+                            <svg class="w-6 h-6 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.995 5.995 0 0012 12a5.995 5.995 0 00-3-5.197M15 21a9 9 0 00-9-9"></path></svg>
+                            <span class="sidebar-text">Clientes</span>
+                        </a>
+                        <a href="#planos" class="sidebar-link flex items-center py-3 px-6 text-[var(--color-text-primary)]">
+                            <svg class="w-6 h-6 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                            <span class="sidebar-text">Planos</span>
+                        </a>
+                        <a href="#financeiro" class="sidebar-link flex items-center py-3 px-6 text-[var(--color-text-primary)]">
+                           <svg class="w-6 h-6 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            <span class="sidebar-text">Financeiro</span>
+                        </a>
+                    </div>
+                     <div class="mt-auto">
+                         <div class="border-t border-[var(--color-border)]"></div>
+                         <div class="py-3 px-6 mt-2">
+                             <a href="#configuracoes" class="sidebar-link flex items-center text-[var(--color-text-primary)]">
+                                <svg class="w-6 h-6 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0 3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <span class="sidebar-text">Configurações</span>
+                            </a>
+                         </div>
+                    </div>
+                </nav>
+            </aside>
+            
+            <div class="flex-1 flex relative">
+                <button id="sidebar-toggle" class="absolute top-6 -ml-5 z-30 w-10 h-10 flex items-center justify-center bg-[var(--color-bg-secondary)] border-4 border-[var(--color-bg-primary)] rounded-lg shadow-lg hover:bg-[var(--color-bg-tertiary)] transition-all duration-300 ease-in-out">
+                    <svg id="toggle-arrow" class="w-5 h-5 text-[var(--color-text-secondary)] transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+
+                <!-- Main content -->
+                <main class="flex-1 overflow-y-auto p-6 md:p-10">
+                    <header class="flex justify-between items-center mb-8">
+                        <h2 id="page-title" class="text-2xl md:text-3xl font-bold">Visão Geral</h2>
+                    </header>
+
+                    <!-- Page: Dashboard -->
+                    <div id="dashboard" class="page active">
+                        <!-- Stats Cards -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                            <div class="bg-[var(--color-bg-secondary)] p-6 rounded-lg shadow-lg overflow-hidden">
+                                <h3 class="text-[var(--color-text-secondary)] text-sm font-medium">Faturamento (mês)</h3>
+                                <p class="text-xl sm:text-2xl lg:text-3xl font-bold mt-2">R$ 12.580,00</p>
+                                <p class="text-green-400 text-sm mt-1">+5.4% vs mês passado</p>
+                            </div>
+                            <div class="bg-[var(--color-bg-secondary)] p-6 rounded-lg shadow-lg">
+                                <h3 class="text-[var(--color-text-secondary)] text-sm font-medium">Clientes Ativos</h3>
+                                <p class="text-xl sm:text-2xl lg:text-3xl font-bold mt-2">142</p>
+                                <p class="text-green-400 text-sm mt-1">+3 novos este mês</p>
+                            </div>
+                            <div class="bg-[var(--color-bg-secondary)] p-6 rounded-lg shadow-lg">
+                                <h3 class="text-[var(--color-text-secondary)] text-sm font-medium">Mensalidades Atrasadas</h3>
+                                <p class="text-xl sm:text-2xl lg:text-3xl font-bold mt-2">8</p>
+                                <p class="text-red-400 text-sm mt-1">Total: R$ 980,00</p>
+                            </div>
+                            <div class="bg-[var(--color-bg-secondary)] p-6 rounded-lg shadow-lg">
+                                <h3 class="text-[var(--color-text-secondary)] text-sm font-medium">Novos Clientes (mês)</h3>
+                                <p class="text-xl sm:text-2xl lg:text-3xl font-bold mt-2">3</p>
+                                 <p class="text-[var(--color-text-secondary)] text-sm mt-1">Meta: 5</p>
+                            </div>
+                        </div>
+
+                        <!-- Recent Payments -->
+                        <div class="bg-[var(--color-bg-secondary)] p-6 rounded-lg shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4">Pagamentos Recentes</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left">
+                                    <thead>
+                                        <tr class="border-b border-[var(--color-border)]">
+                                            <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-secondary)]">Cliente</th>
+                                            <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-secondary)]">Valor</th>
+                                            <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-secondary)]">Data</th>
+                                            <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-secondary)]">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-[var(--color-border)] hover:bg-[var(--color-bg-tertiary-hover)]/50">
+                                            <td class="py-3 px-4">João da Silva</td>
+                                            <td class="py-3 px-4">R$ 120,00</td>
+                                            <td class="py-3 px-4">23/09/2025</td>
+                                            <td class="py-3 px-4"><span class="bg-green-500/20 text-green-300 py-1 px-3 rounded-full text-xs">Pago</span></td>
+                                        </tr>
+                                        <tr class="border-b border-[var(--color-border)] hover:bg-[var(--color-bg-tertiary-hover)]/50">
+                                            <td class="py-3 px-4">Maria Oliveira</td>
+                                            <td class="py-3 px-4">R$ 250,00</td>
+                                            <td class="py-3 px-4">22/09/2025</td>
+                                            <td class="py-3 px-4"><span class="bg-green-500/20 text-green-300 py-1 px-3 rounded-full text-xs">Pago</span></td>
+                                        </tr>
+                                        <tr class="border-b border-[var(--color-border)] hover:bg-[var(--color-bg-tertiary-hover)]/50">
+                                            <td class="py-3 px-4">Carlos Pereira</td>
+                                            <td class="py-3 px-4">R$ 120,00</td>
+                                            <td class="py-3 px-4">Vence em 2 dias</td>
+                                            <td class="py-3 px-4"><span class="bg-yellow-500/20 text-yellow-300 py-1 px-3 rounded-full text-xs">Em Aberto</span></td>
+                                        </tr>
+                                        <tr class="hover:bg-[var(--color-bg-tertiary-hover)]/50">
+                                            <td class="py-3 px-4">Ana Costa</td>
+                                            <td class="py-3 px-4">R$ 150,00</td>
+                                            <td class="py-3 px-4">Venceu há 5 dias</td>
+                                            <td class="py-3 px-4"><span class="bg-red-500/20 text-red-300 py-1 px-3 rounded-full text-xs">Atrasado</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page: Clientes -->
+                    <div id="clientes" class="page">
+                        <div class="bg-[var(--color-bg-secondary)] p-6 rounded-lg shadow-lg">
+                            <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                                 <div class="relative w-full md:w-1/3 mb-4 md:mb-0">
+                                    <input type="text" placeholder="Buscar por nome, CPF..." class="w-full bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]">
+                                     <svg class="w-5 h-5 text-[var(--color-text-secondary)] absolute right-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                </div>
+                                <button class="w-full md:w-auto bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors">
+                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                    Novo Cliente
+                                </button>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left">
+                                     <thead>
+                                        <tr class="border-b border-[var(--color-border)]">
+                                            <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-secondary)]">Nome</th>
+                                            <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-secondary)] hidden md:table-cell">Plano</th>
+                                            <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-secondary)] hidden lg:table-cell">Adesão</th>
+                                            <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-secondary)]">Status</th>
+                                            <th class="py-3 px-4 text-sm font-semibold text-[var(--color-text-secondary)]">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Mock data rows -->
+                                        <tr class="border-b border-[var(--color-border)] hover:bg-[var(--color-bg-tertiary-hover)]/50">
+                                            <td class="py-3 px-4">
+                                                <div class="font-medium">João da Silva</div>
+                                                <div class="text-sm text-[var(--color-text-secondary)]">123.456.789-00</div>
+                                            </td>
+                                            <td class="py-3 px-4 hidden md:table-cell">Premium</td>
+                                            <td class="py-3 px-4 hidden lg:table-cell">15/01/2024</td>
+                                            <td class="py-3 px-4"><span class="bg-green-500/20 text-green-300 py-1 px-3 rounded-full text-xs">Ativo</span></td>
+                                            <td class="py-3 px-4 flex items-center space-x-2">
+                                                <button class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg></button>
+                                                <button class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                                            </td>
+                                        </tr>
+                                        <tr class="border-b border-[var(--color-border)] hover:bg-[var(--color-bg-tertiary-hover)]/50">
+                                            <td class="py-3 px-4">
+                                                <div class="font-medium">Maria Oliveira</div>
+                                                <div class="text-sm text-[var(--color-text-secondary)]">987.654.321-00</div>
+                                            </td>
+                                            <td class="py-3 px-4 hidden md:table-cell">Básico</td>
+                                            <td class="py-3 px-4 hidden lg:table-cell">01/03/2024</td>
+                                            <td class="py-3 px-4"><span class="bg-green-500/20 text-green-300 py-1 px-3 rounded-full text-xs">Ativo</span></td>
+                                            <td class="py-3 px-4 flex items-center space-x-2">
+                                                 <button class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg></button>
+                                                <button class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                                            </td>
+                                        </tr>
+                                         <tr class="hover:bg-[var(--color-bg-tertiary-hover)]/50">
+                                            <td class="py-3 px-4">
+                                                <div class="font-medium">Ricardo Souza</div>
+                                                <div class="text-sm text-[var(--color-text-secondary)]">456.123.789-00</div>
+                                            </td>
+                                            <td class="py-3 px-4 hidden md:table-cell">Premium</td>
+                                            <td class="py-3 px-4 hidden lg:table-cell">20/11/2023</td>
+                                            <td class="py-3 px-4"><span class="bg-gray-600/50 text-gray-300 py-1 px-3 rounded-full text-xs">Inativo</span></td>
+                                            <td class="py-3 px-4 flex items-center space-x-2">
+                                                 <button class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg></button>
+                                                <button class="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- Page: Planos -->
+                    <div id="planos" class="page">
+                         <div class="flex justify-end mb-6">
+                            <button class="bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors">
+                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                Novo Plano
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="bg-[var(--color-bg-secondary)] p-6 rounded-lg shadow-lg flex flex-col justify-between">
+                                <div>
+                                    <h3 class="text-xl font-bold">Plano Básico</h3>
+                                    <p class="text-3xl font-bold mt-4">R$ 120,00<span class="text-base font-normal text-[var(--color-text-secondary)]">/mês</span></p>
+                                    <p class="text-[var(--color-text-secondary)] mt-4 text-sm">Acesso aos recursos essenciais para começar a gerenciar.</p>
+                                </div>
+                                <div class="mt-6 flex space-x-2">
+                                     <button class="w-full bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-tertiary-hover)] font-bold py-2 px-4 rounded-lg transition-colors">Editar</button>
+                                     <button class="w-full bg-red-600/50 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Excluir</button>
+                                </div>
+                            </div>
+                             <div class="bg-[var(--color-bg-secondary)] p-6 rounded-lg shadow-lg border-2 border-[var(--color-accent)] flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-center">
+                                        <h3 class="text-xl font-bold">Plano Premium</h3>
+                                        <span class="bg-blue-500/20 text-blue-300 py-1 px-3 rounded-full text-xs">Popular</span>
+                                    </div>
+                                    <p class="text-3xl font-bold mt-4">R$ 250,00<span class="text-base font-normal text-[var(--color-text-secondary)]">/mês</span></p>
+                                    <p class="text-[var(--color-text-secondary)] mt-4 text-sm">Recursos avançados, relatórios e suporte prioritário.</p>
+                                </div>
+                                <div class="mt-6 flex space-x-2">
+                                     <button class="w-full bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-tertiary-hover)] font-bold py-2 px-4 rounded-lg transition-colors">Editar</button>
+                                     <button class="w-full bg-red-600/50 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Excluir</button>
+                                </div>
+                            </div>
+                             <div class="bg-[var(--color-bg-secondary)] p-6 rounded-lg shadow-lg flex flex-col justify-between">
+                                <div>
+                                    <h3 class="text-xl font-bold">Plano Enterprise</h3>
+                                    <p class="text-3xl font-bold mt-4">R$ 490,00<span class="text-base font-normal text-[var(--color-text-secondary)]">/mês</span></p>
+                                    <p class="text-[var(--color-text-secondary)] mt-4 text-sm">Solução completa para grandes equipes e multiempresas.</p>
+                                </div>
+                                 <div class="mt-6 flex space-x-2">
+                                     <button class="w-full bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-tertiary-hover)] font-bold py-2 px-4 rounded-lg transition-colors">Editar</button>
+                                     <button class="w-full bg-red-600/50 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Excluir</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Placeholder pages for Financeiro and Configurações -->
+                     <div id="financeiro" class="page">
+                         <div class="bg-[var(--color-bg-secondary)] p-6 rounded-lg shadow-lg text-center">
+                             <h3 class="text-2xl font-bold mb-4">Módulo Financeiro</h3>
+                             <p class="text-[var(--color-text-secondary)]">Página em construção. Aqui ficarão os relatórios de faturamento e o histórico detalhado de pagamentos.</p>
+                         </div>
+                     </div>
+                     <div id="configuracoes" class="page">
+                         <div class="bg-[var(--color-bg-secondary)] p-6 rounded-lg shadow-lg">
+                             <h3 class="text-xl font-semibold mb-4">Aparência</h3>
+                             <p class="text-[var(--color-text-secondary)] mb-6">Escolha um tema para a aplicação.</p>
+                             <div class="flex flex-wrap gap-4" id="theme-switcher">
+                                 <button data-theme="dark" class="theme-button flex-1 md:flex-auto bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-tertiary-hover)] font-semibold py-2 px-4 rounded-lg transition-colors">Padrão Escuro</button>
+                                 <button data-theme="light" class="theme-button flex-1 md:flex-auto bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-tertiary-hover)] font-semibold py-2 px-4 rounded-lg transition-colors">Claro</button>
+                                 <button data-theme="matrix" class="theme-button flex-1 md:flex-auto bg-[var(--color-bg-tertiary)] hover:bg-[var(--color-bg-tertiary-hover)] font-semibold py-2 px-4 rounded-lg transition-colors">Matrix</button>
+                             </div>
+                         </div>
+                     </div>
+
+                </main>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('aside');
+            const mainContent = document.querySelector('main');
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const pages = document.querySelectorAll('.page');
+            const pageTitle = document.getElementById('page-title');
+            const toggleButton = document.getElementById('sidebar-toggle');
+            const themeSwitcher = document.getElementById('theme-switcher');
+            const docElement = document.documentElement;
+
+            // Function to handle page navigation
+            function showPage(hash) {
+                const targetPageId = hash.substring(1) || 'dashboard';
+                let pageFound = false;
+
+                pages.forEach(page => {
+                    if (page.id === targetPageId) {
+                        page.classList.add('active');
+                        pageFound = true;
+                    } else {
+                        page.classList.remove('active');
+                    }
+                });
+
+                if (!pageFound) {
+                    document.getElementById('dashboard').classList.add('active');
+                }
+
+                sidebarLinks.forEach(link => {
+                    const linkHash = link.getAttribute('href');
+                    const linkTextElement = link.querySelector('.sidebar-text');
+                    if (linkHash === `#${targetPageId}`) {
+                        link.classList.add('active');
+                        if (linkTextElement) {
+                             pageTitle.textContent = linkTextElement.textContent.trim();
+                        }
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const hash = this.getAttribute('href');
+                    history.pushState(null, null, hash);
+                    showPage(hash);
+                });
+            });
+
+            window.addEventListener('popstate', function() {
+                showPage(window.location.hash || '#dashboard');
+            });
+
+            // --- Sidebar Toggle Functionality ---
+            if(sidebar && toggleButton) {
+                const collapseSidebar = () => {
+                    sidebar.classList.add('sidebar-collapsed');
+                    sidebar.classList.remove('w-64');
+                    sidebar.classList.add('w-20'); // 5rem
+                    toggleButton.classList.add('is-collapsed');
+                    localStorage.setItem('sidebarState', 'collapsed');
+                };
+
+                const expandSidebar = () => {
+                    sidebar.classList.remove('sidebar-collapsed');
+                    sidebar.classList.remove('w-20');
+                    sidebar.classList.add('w-64');
+                    toggleButton.classList.remove('is-collapsed');
+                    localStorage.setItem('sidebarState', 'expanded');
+                };
+
+                toggleButton.addEventListener('click', () => {
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        expandSidebar();
+                    } else {
+                        collapseSidebar();
+                    }
+                });
+
+                if (localStorage.getItem('sidebarState') === 'collapsed') {
+                    collapseSidebar();
+                }
+            }
+
+            // --- Theme Switcher Functionality ---
+            const updateActiveThemeButton = (theme) => {
+                themeSwitcher.querySelectorAll('.theme-button').forEach(button => {
+                    if (button.dataset.theme === theme) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+            };
+            
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            docElement.setAttribute('data-theme', savedTheme);
+            updateActiveThemeButton(savedTheme);
+            
+            themeSwitcher.addEventListener('click', (e) => {
+                const button = e.target.closest('.theme-button');
+                if (button) {
+                    const theme = button.dataset.theme;
+                    docElement.setAttribute('data-theme', theme);
+                    localStorage.setItem('theme', theme);
+                    updateActiveThemeButton(theme);
+                }
+            });
+
+            // Show initial page
+            showPage(window.location.hash);
+        });
+    </script>
+</body>
+</html>
+
